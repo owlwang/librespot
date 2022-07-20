@@ -54,6 +54,7 @@ class AbsChunkedInputStream(io.BytesIO, HaltListener):
 
     def close(self) -> None:
         self.closed = True
+        self.clear_buffer()
         with self.wait_lock:
             self.wait_lock.notify_all()
 
@@ -634,6 +635,9 @@ class CdnManager:
 
             def buffer(self) -> typing.List[bytes]:
                 return self.streamer.buffer
+
+            def clear_buffer(self):
+                del self.streamer.buffer
 
             def size(self) -> int:
                 return self.streamer.size
